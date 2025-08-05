@@ -1,0 +1,32 @@
+# OSC2MIDI Mapping Configuration
+# 8-channel multitimbral MIDI mapping with reverb control and latency monitoring
+
+# Channels 1-8 note mapping
+/midi/1 fff, chan, note, vel: noteon(0, note*127, vel*127)
+/midi/1 fff, chan, note, vel: noteoff(0, note*127, vel*127)
+/midi/2 fff, chan, note, vel: noteon(1, note*127, vel*127)
+/midi/2 fff, chan, note, vel: noteoff(1, note*127, vel*127)
+/midi/3 fff, chan, note, vel: noteon(2, note*127, vel*127)
+/midi/3 fff, chan, note, vel: noteoff(2, note*127, vel*127)
+/midi/4 fff, chan, note, vel: noteon(3, note*127, vel*127)
+/midi/4 fff, chan, note, vel: noteoff(3, note*127, vel*127)
+/midi/5 fff, chan, note, vel: noteon(4, note*127, vel*127)
+/midi/5 fff, chan, note, vel: noteoff(4, note*127, vel*127)
+/midi/6 fff, chan, note, vel: noteon(5, note*127, vel*127)
+/midi/6 fff, chan, note, vel: noteoff(5, note*127, vel*127)
+/midi/7 fff, chan, note, vel: noteon(6, note*127, vel*127)
+/midi/7 fff, chan, note, vel: noteoff(6, note*127, vel*127)
+/midi/8 fff, chan, note, vel: noteon(7, note*127, vel*127)
+/midi/8 fff, chan, note, vel: noteoff(7, note*127, vel*127)
+
+# Reverb control (CC 91) for all channels
+/reverb/1 f, val: controlchange(0, 91, val*127)
+/reverb/2 f, val: controlchange(1, 91, val*127)
+/reverb/3 f, val: controlchange(2, 91, val*127)
+/reverb/4 f, val: controlchange(3, 91, val*127)
+/reverb/5 f, val: controlchange(4, 91, val*127)
+/reverb/6 f, val: controlchange(5, 91, val*127)
+/reverb/7 f, val: controlchange(6, 91, val*127)
+/reverb/8 f, val: controlchange(7, 91, val*127)
+
+# Latency monitoring handled separately on port 9002

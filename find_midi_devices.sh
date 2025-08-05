@@ -72,6 +72,10 @@ if [ -n "$DEVICE_ID" ]; then
     echo "Selected device: ${devices[$selected_index]} ($DEVICE_ID)"
     echo "=========================="
     
+    # Export for use by other scripts
+    export MIDI_DEVICE_ID="$DEVICE_ID"
+    export MIDI_DEVICE_NAME="${devices[$selected_index]}"
+    
     # Extract key info efficiently
     lsusb -v -d "$DEVICE_ID" 2>/dev/null | awk '
     /idVendor/ { vendor = $0; gsub(/^[ \t]+/, "", vendor) }

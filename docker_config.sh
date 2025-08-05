@@ -10,6 +10,7 @@ DOCKER_FLAGS=(
   --cap-add=IPC_LOCK
   --ulimit memlock=-1
   --shm-size=256m
+  --network=host
 )
 
 # Docker image name

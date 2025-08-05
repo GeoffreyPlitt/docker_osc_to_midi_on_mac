@@ -5,23 +5,75 @@ The Mac "owns" the midi deviec and the docker just sends/receives OSC.
 
 ## Quick Start
 
-1. **Install honcho** (process manager):
+1. **Install dependencies**:
    ```bash
    pip install honcho
+   brew install gum  # For interactive MIDI device selection
    ```
 
 2. **Run the complete demo**:
    ```bash
-   honcho start
+   ./go.sh
    ```
+   This will:
+   - Interactively select your USB MIDI device
+   - Start the complete OSC2MIDI bridge
+   - Launch Docker container with OSC client
+
+## Testing
+
+### Interactive Mode (Recommended)
+```bash
+./go.sh
+```
+
+### Non-Interactive Mode (for CI/automation)
+```bash
+echo "test" | ./go.sh  # Automatically selects first MIDI device
+```
+
+### Quick Test (10 seconds)
+```bash
+timeout 10 bash -c 'echo "test" | ./go.sh'
+```
 
 ## Individual Components
 
-COMING SOON
+- **Mac Host**: Runs osc2midi bridge with interactive MIDI device selection
+- **Docker Container**: OSC client with latency monitoring and traffic logging
+- **OSC2MIDI Mapping**: 8-channel multitimbral note mapping + reverb control
+- **Latency Monitor**: Ping/pong measurement every 10 seconds
+
+### Mac Components:
+- `find_midi_devices.sh` - Interactive USB MIDI device selector
+- `mappings.omm` - OSC2MIDI configuration for 8 channels + reverb + ping
+- `ping_sender.sh` - Sends latency ping every 10 seconds
+- `run_mac_stuff.sh` - Main Mac orchestration script
+
+### Docker Components:
+- `pong_responder.sh` - Responds to pings and calculates latency
+- `container_action.sh` - Main Docker container script
+- JACK audio server for low-latency processing
 
 ## Architecture
 
-COMING SOON
+```
+Mac Host (owns MIDI device)          Docker Container
+├── find_midi_devices.sh           ├── JACK Server
+├── osc2midi --verbose              ├── pong_responder.sh
+├── OSC Server (port 9001)          ├── oscdump monitor (port 9000)
+├── ping_sender.sh (port 9002)      └── pong_responder.sh (port 9002)
+└── mappings.omm                         │
+         │                               │
+         └─── UDP OSC (host network) ────┘
+
+MIDI Device ←→ Mac ←→ OSC ←→ Docker
+```
+
+**Mapping Examples:**
+- MIDI Notes: `/midi/1 60 100` → Channel 1, Middle C, Velocity 100
+- Reverb: `/reverb/2 0.7` → Channel 2, 70% reverb
+- Latency: `/ping <timestamp>` → `/pong <timestamp> <latency_ms>`
 
 ## Requirements
 
