@@ -7,7 +7,6 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY container_action.sh .
-COPY pong_responder.sh .
-RUN chmod +x container_action.sh pong_responder.sh
+RUN chmod +x container_action.sh
 
 CMD ["./container_action.sh"]

@@ -1,5 +1,5 @@
 # OSC2MIDI Mapping Configuration
-# 8-channel multitimbral MIDI mapping with reverb control and latency monitoring
+# 8-channel multitimbral MIDI mapping with reverb control
 
 # Channels 1-8 note mapping
 /midi/1 fff, chan, note, vel: noteon(0, note*127, vel*127)
@@ -28,5 +28,3 @@
 /reverb/6 f, val: controlchange(5, 91, val*127)
 /reverb/7 f, val: controlchange(6, 91, val*127)
 /reverb/8 f, val: controlchange(7, 91, val*127)
-
-# Latency monitoring handled separately on port 9002

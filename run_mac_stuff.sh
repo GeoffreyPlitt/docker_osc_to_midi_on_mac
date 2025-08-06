@@ -37,7 +37,7 @@ else
     USE_OSMID=true
 fi
 
-# Start OSC server for receiving pong responsesecho "Starting OSC server on port 9001..."
+echo "Starting OSC server on port 9001..."
 oscdump 9001 &
 OSC_SERVER_PID=$!
 
@@ -51,10 +51,6 @@ echo "DEBUG: About to run: $M2O_CMD"
 $M2O_CMD &
 M2O_PID=$!
 
-echo "Starting latency ping sender..."
-./ping_sender.sh &
-PING_PID=$!
-
 # Wait for interrupt
-trap "echo 'Stopping...'; kill $M2O_PID $PING_PID $OSC_SERVER_PID $JACK_PID 2>/dev/null || true; exit 0" INT
+trap "echo 'Stopping...'; kill $M2O_PID $OSC_SERVER_PID $JACK_PID 2>/dev/null || true; exit 0" INT
 wait
