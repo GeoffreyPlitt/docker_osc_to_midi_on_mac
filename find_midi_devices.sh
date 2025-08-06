@@ -80,21 +80,23 @@ if [ -n "$DEVICE_ID" ]; then
     echo "Selected device: ${devices[$selected_index]} ($DEVICE_ID)"
     echo "=========================="
     
-    # Since USB device names don't always match Core MIDI names,
-    # just use the first (and likely only) MIDI device index 0
-    CORE_MIDI_INDEX=0
+    # Get Core MIDI device index (extract from device list, skipping header)
+    CORE_MIDI_INDEX=$(./m2o --list 2>/dev/null | grep -E '^\s*\([0-9]+\):' | sed -n "$((selected_index + 1))p" | grep -oE '\([0-9]+\)' | tr -d '()' || echo "-1")
     
-    # Verify the device exists
-    MIDI_DEVICE_COUNT=$(./m2o --list | grep -c "([0-9]*):" || echo "0")
-    if [ "$MIDI_DEVICE_COUNT" -eq 0 ]; then
-        echo "Warning: No Core MIDI devices found"
+    if [ -z "$CORE_MIDI_INDEX" ] || [ "$CORE_MIDI_INDEX" = "-1" ]; then
+        echo "Warning: Could not find Core MIDI device at position $((selected_index + 1))"
         CORE_MIDI_INDEX=-1
+    else
+        echo "Using Core MIDI device index: $CORE_MIDI_INDEX"
     fi
     
     # Export for use by other scripts
     export MIDI_DEVICE_ID="$DEVICE_ID"
     export MIDI_DEVICE_NAME="${devices[$selected_index]}"
     export CORE_MIDI_INDEX="$CORE_MIDI_INDEX"
+    echo MIDI_DEVICE_ID="$MIDI_DEVICE_ID"
+    echo MIDI_DEVICE_NAME="$MIDI_DEVICE_NAME"
+    echo CORE_MIDI_INDEX="$CORE_MIDI_INDEX"
     
     # Extract key info efficiently
     lsusb -v -d "$DEVICE_ID" 2>/dev/null | awk '
