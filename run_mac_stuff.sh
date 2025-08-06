@@ -41,12 +41,15 @@ OSC_SERVER_PID=$!
 
 echo "Starting osmid m2o bridge (Core MIDI)..."
 
-# Use CORE_MIDI_INDEX from device selection, fallback to 0
-MIDI_INDEX=${CORE_MIDI_INDEX:-0}
+# Use CORE_MIDI_DEVICE_NAME from device selection
+if [ -z "$CORE_MIDI_DEVICE_NAME" ]; then
+    echo "Error: No MIDI device name specified. Run find_midi_devices.sh first."
+    exit 1
+fi
 
-M2O_CMD="./m2o --midiin $MIDI_INDEX --oschost 127.0.0.1 --oscport 9000 --monitor 1"
+M2O_CMD="./m2o --midiin \"$CORE_MIDI_DEVICE_NAME\" --oschost 127.0.0.1 --oscport 9000 --monitor 1"
 echo "DEBUG: About to run: $M2O_CMD"
-$M2O_CMD &
+eval $M2O_CMD &
 M2O_PID=$!
 
 # Wait for interrupt
