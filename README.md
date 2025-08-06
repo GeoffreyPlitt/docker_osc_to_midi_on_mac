@@ -1,4 +1,4 @@
-# docker_audio_to_mac
+# docker_osc_to_midi_on_mac
 
 This repository demonstrates low-latency bidirectional mapping of multitimbral MIDI input/output from Mac to a Docker container as OSC messages.
 The Mac "owns" the midi deviec and the docker just sends/receives OSC.
