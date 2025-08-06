@@ -10,9 +10,11 @@ sleep 3
 
 jack_lsp -c
 
-# Start OSC monitoring on the main port
-echo "Starting OSC traffic monitor on port 9000..."
-oscdump 9000 &
+PORT=9000
+echo "Starting OSC traffic monitor on port $PORT..."
+# socat -v UDP-LISTEN:9000,fork - &
+oscdump $PORT &
+
 OSC_MONITOR_PID=$!
 
 # Keep container running and show OSC traffic

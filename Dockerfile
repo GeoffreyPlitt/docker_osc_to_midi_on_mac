@@ -3,6 +3,7 @@ FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y \
     jackd2 \
     liblo-tools \
+    socat \
     bc \
     && rm -rf /var/lib/apt/lists/*
 
