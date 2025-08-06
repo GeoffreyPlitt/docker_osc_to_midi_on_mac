@@ -1,0 +1,23 @@
+# Multitimbral OSC to MIDI mapping file
+# Maps OSC messages from osmid's m2o format to MIDI
+# Supports MIDI channels 0-15
+
+# OSC Template format from m2o: /midi/$c/$m
+# Where $c = channel number, $m = message type (note_on, note_off, etc)
+# m2o sends note and velocity as integer arguments
+
+# Note messages: /midi/{channel}/note_on ii note velocity
+/midi/{i}/note_on ii, chan,note,vel : noteon( chan, note, vel );
+/midi/{i}/note_off ii, chan,note,vel : noteoff( chan, note, vel );
+
+# Control change messages: /midi/{channel}/control_change ii control value  
+/midi/{i}/control_change ii, chan,ctl,val : controlchange( chan, ctl, val );
+
+# Program change: /midi/{channel}/program_change i program
+/midi/{i}/program_change i, chan,pgm : programchange( chan, pgm );
+
+# Pitch bend: /midi/{channel}/pitch_bend i value
+/midi/{i}/pitch_bend i, chan,val : pitchbend( chan, val );
+
+# Channel aftertouch: /midi/{channel}/aftertouch i pressure
+/midi/{i}/aftertouch i, chan,pres : aftertouch( chan, pres );

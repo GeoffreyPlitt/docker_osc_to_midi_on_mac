@@ -40,7 +40,7 @@ RUN apt-get update && apt-get install -y \
     cd / && \
     rm -rf /tmp/osc2midi
 
-COPY container_action.sh .
+COPY container_action.sh multitimbral.omm ./
 RUN chmod +x container_action.sh
 
 CMD ["./container_action.sh"]

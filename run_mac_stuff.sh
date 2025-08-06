@@ -47,7 +47,7 @@ if [ -z "$CORE_MIDI_DEVICE_NAME" ]; then
     exit 1
 fi
 
-M2O_CMD="./m2o --midiin \"$CORE_MIDI_DEVICE_NAME\" --oschost 127.0.0.1 --oscport 9000 --monitor 1 | grep --line-buffered note"
+M2O_CMD="./m2o --midiin \"$CORE_MIDI_DEVICE_NAME\" --oschost 127.0.0.1 --oscport 9000 --osctemplate '/midi/\$c/\$m' --monitor 1 | grep --line-buffered note"
 echo "DEBUG: About to run: $M2O_CMD"
 eval $M2O_CMD &
 M2O_PID=$!
