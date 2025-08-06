@@ -15,10 +15,6 @@ The Mac "owns" the midi deviec and the docker just sends/receives OSC.
    ```bash
    ./go.sh
    ```
-   This will:
-   - Interactively select your USB MIDI device
-   - Start the complete OSC2MIDI bridge
-   - Launch Docker container with OSC client
 
 ## Testing
 
@@ -39,9 +35,8 @@ timeout 10 bash -c 'echo "test" | ./go.sh'
 
 ## Individual Components
 
-- **Mac Host**: Runs osc2midi bridge with interactive MIDI device selection
-- **Docker Container**: OSC client with traffic logging
-- **OSC2MIDI Mapping**: 8-channel multitimbral note mapping + reverb control
+- **Mac Host**: Runs osmid "m2o" bridge with interactive MIDI device selection
+- **Docker Container**: Runs OSC2MIDI with mapping file specifying 8-channel multitimbral notes + reverb control
 
 ### Mac Components:
 - `find_midi_devices.sh` - Interactive USB MIDI device selector
