@@ -10,7 +10,6 @@ if ! command -v brew &> /dev/null; then
     exit 1
 fi
 
-# Check for osmid (Core MIDI - preferred over osc2midi)
 if [ -f "./o2m" ] && [ -f "./m2o" ]; then
     echo "osmid is installed (preferred for macOS Core MIDI)."
 else
@@ -35,7 +34,8 @@ else
     echo "osmid installation completed."
 fi
 
-echo "Starting OSC server..."
+echo "Starting oscdump..."
+kill $(lsof -t -i:9001) || echo "No oscdump process found"
 oscdump 9001 &
 OSC_SERVER_PID=$!
 
@@ -47,7 +47,7 @@ if [ -z "$CORE_MIDI_DEVICE_NAME" ]; then
     exit 1
 fi
 
-M2O_CMD="./m2o --midiin \"$CORE_MIDI_DEVICE_NAME\" --oschost 127.0.0.1 --oscport 9000 --monitor 1"
+M2O_CMD="./m2o --midiin \"$CORE_MIDI_DEVICE_NAME\" --oschost 127.0.0.1 --oscport 9000 --monitor 1 | egrep -v '\[..\]|clock|received MIDI message:|active_sensing'"
 echo "DEBUG: About to run: $M2O_CMD"
 eval $M2O_CMD &
 M2O_PID=$!
