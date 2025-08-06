@@ -55,19 +55,24 @@ timeout 10 bash -c 'echo "test" | ./go.sh'
 - `container_action.sh` - Main Docker container script
 - JACK audio server for low-latency processing
 
-## Architecture
+## Script Call Tree
 
 ```
-Mac Host (owns MIDI device)          Docker Container
-├── find_midi_devices.sh           ├── JACK Server
-├── osc2midi --verbose              ├── pong_responder.sh
-├── OSC Server (port 9001)          ├── oscdump monitor (port 9000)
-├── ping_sender.sh (port 9002)      └── pong_responder.sh (port 9002)
-└── mappings.omm                         │
-         │                               │
-         └─── UDP OSC (host network) ────┘
-
-MIDI Device ←→ Mac ←→ OSC ←→ Docker
+./go.sh
+├── sources: ./find_midi_devices.sh
+└── exec: honcho start
+    ├── mac: ./run_mac_stuff.sh
+    │   └── ./ping_sender.sh (backgrounded)
+    │
+    └── container: ./run_docker_stuff.sh
+        └── ./run_docker.sh
+            ├── sources: ./docker_config.sh
+            ├── docker build (uses Dockerfile)
+            │   └── copies into image:
+            │       ├── container_action.sh
+            │       └── pong_responder.sh
+            └── docker run: ./container_action.sh
+                └── ./pong_responder.sh (backgrounded)
 ```
 
 **Mapping Examples:**
