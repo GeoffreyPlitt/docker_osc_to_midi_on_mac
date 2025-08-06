@@ -1,7 +1,7 @@
-# docker_audio_to_mac
+# Docker OSC to MIDI on Mac
 
 This repository demonstrates low-latency bidirectional mapping of multitimbral MIDI input/output from Mac to a Docker container as OSC messages.
-The Mac "owns" the midi deviec and the docker just sends/receives OSC.
+The Mac "owns" the MIDI device and the Docker container sends/receives OSC.
 
 ## Quick Start
 
@@ -33,19 +33,35 @@ echo "test" | ./go.sh  # Automatically selects first MIDI device
 timeout 10 bash -c 'echo "test" | ./go.sh'
 ```
 
-## Individual Components
+## Architecture
 
-- **Mac Host**: Runs osmid "m2o" bridge with interactive MIDI device selection
-- **Docker Container**: Runs OSC2MIDI with mapping file specifying 8-channel multitimbral notes + reverb control
+### Data Flow
+1. **MIDI Input** (Mac) → `m2o` (osmid) → **OSC Messages** → Docker Container
+2. Docker Container receives OSC on port 9000
+3. `osc2midi` converts OSC to MIDI using mapping rules
+4. JACK audio server processes MIDI events
+
+### Individual Components
+
+- **Mac Host**: Runs osmid's `m2o` bridge to convert MIDI to OSC
+  - Interactive MIDI device selection via `gum`
+  - Sends OSC messages in format: `/midi/{channel}/{message_type}`
+  
+- **Docker Container**: Runs OSC2MIDI to receive and process OSC messages
+  - JACK audio server with dummy driver (no physical audio hardware needed)
+  - Mapping file supports all MIDI channels (0-15)
+  - Monitor mode available for debugging
 
 ### Mac Components:
-- `find_midi_devices.sh` - Interactive USB MIDI device selector
-- `multitimbral.omm` - OSC2MIDI configuration for 8 channels, etc
+- `find_midi_devices.sh` - Interactive USB MIDI device selector using `gum`
 - `run_mac_stuff.sh` - Main Mac orchestration script
+- `m2o` - MIDI to OSC converter (built from GeoffreyPlitt's osmid fork)
 
 ### Docker Components:
 - `container_action.sh` - Main Docker container script
-- JACK audio server for low-latency processing
+- `multitimbral.omm` - OSC2MIDI mapping configuration
+- JACK audio server for MIDI processing
+- `osc2midi` - OSC to MIDI converter
 
 ## Script Call Tree
 
@@ -64,9 +80,9 @@ timeout 10 bash -c 'echo "test" | ./go.sh'
             └── docker run: ./container_action.sh
 ```
 
-**Mapping Examples:**
-- MIDI Notes: `/midi/1 60 100` → Channel 1, Middle C, Velocity 100
-- Reverb: `/reverb/2 0.7` → Channel 2, 70% reverb
+## Debugging
+
+Run `echo whatever | ./go.sh` to start it with your default midi device.
 
 ## Requirements
 
