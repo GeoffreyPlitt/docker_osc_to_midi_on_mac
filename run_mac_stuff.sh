@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+set -e
 
 echo "Setting up Mac host dependencies..."
 
@@ -13,7 +13,6 @@ fi
 # Check for osmid (Core MIDI - preferred over osc2midi)
 if [ -f "./o2m" ] && [ -f "./m2o" ]; then
     echo "osmid is installed (preferred for macOS Core MIDI)."
-    USE_OSMID=true
 else
     echo "osmid not found. Installing osmid from GeoffreyPlitt's fork..."
     
@@ -34,10 +33,9 @@ else
     cd /Users/giro/docker_osc_to_midi_on_mac
     rm -rf "$TEMP_DIR"
     echo "osmid installation completed."
-    USE_OSMID=true
 fi
 
-echo "Starting OSC server on port 9001..."
+echo "Starting OSC server..."
 oscdump 9001 &
 OSC_SERVER_PID=$!
 
