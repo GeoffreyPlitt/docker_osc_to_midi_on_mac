@@ -1,1 +1,5 @@
 .DS_Store
+
+#osmid executables
+m2o
+o2m
