@@ -6,7 +6,7 @@
 set -e
 
 HOST="127.0.0.1"
-PORT="9002"  # Direct to Docker container, not through osc2midi
+PORT="9004"  # Direct to Docker container, not through osc2midi
 
 echo "Starting ping sender to $HOST:$PORT (every 10 seconds)..."
 

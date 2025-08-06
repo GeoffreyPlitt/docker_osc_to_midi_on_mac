@@ -7,7 +7,14 @@ set -e
 
 MAC_HOST="host.docker.internal"
 MAC_PORT="9001"
-LISTEN_PORT="9002"  # Separate port for ping/pong
+LISTEN_PORT="9004"  # Use different port to avoid conflict with Mac ping sender
+
+EXISTING_PID=$(lsof -ti:$LISTEN_PORT 2>/dev/null || true)
+if [ -n "$EXISTING_PID" ]; then
+    echo "Killing process $EXISTING_PID using port $LISTEN_PORT"
+    kill -9 $EXISTING_PID 2>/dev/null || true
+    sleep 1
+fi
 
 echo "Starting pong responder listening on port $LISTEN_PORT..."
 echo "Will respond to Mac at $MAC_HOST:$MAC_PORT"

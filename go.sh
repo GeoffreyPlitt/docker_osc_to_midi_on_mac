@@ -8,8 +8,8 @@ set -e
 echo "=== OSC2MIDI Bridge Setup ==="
 echo "First, let's select your MIDI device..."
 
-# Run MIDI device selection interactively
-./find_midi_devices.sh
+# Run MIDI device selection interactively and source the exports
+source ./find_midi_devices.sh
 
 echo ""
 echo "Now starting the complete system..."

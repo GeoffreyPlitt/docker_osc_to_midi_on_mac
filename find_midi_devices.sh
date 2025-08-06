@@ -53,16 +53,24 @@ if [ ${#devices[@]} -eq 0 ]; then
     exit 1
 fi
 
-# Use gum to let user select a device
+# Use gum to let user select a device or auto-select if piped input
 echo "Select a MIDI device:"
-selected_index=$(printf '%s\n' "${devices[@]}" | gum choose --selected.foreground="#00ff00" | while read -r line; do
-    for i in "${!devices[@]}"; do
-        if [[ "${devices[$i]}" == "$line" ]]; then
-            echo "$i"
-            break
-        fi
-    done
-done)
+if [ -t 0 ]; then
+    # Interactive mode - TTY available
+    selected_index=$(printf '%s\n' "${devices[@]}" | gum choose --selected.foreground="#00ff00" | while read -r line; do
+        for i in "${!devices[@]}"; do
+            if [[ "${devices[$i]}" == "$line" ]]; then
+                echo "$i"
+                break
+            fi
+        done
+    done)
+else
+    # Non-interactive mode - use first device
+    echo "Non-interactive mode detected, using first available MIDI device:"
+    selected_index=0
+    printf '%s\n' "${devices[@]}" | head -1
+fi
 
 # Get the selected device ID
 DEVICE_ID="${device_ids[$selected_index]}"
@@ -72,9 +80,21 @@ if [ -n "$DEVICE_ID" ]; then
     echo "Selected device: ${devices[$selected_index]} ($DEVICE_ID)"
     echo "=========================="
     
+    # Since USB device names don't always match Core MIDI names,
+    # just use the first (and likely only) MIDI device index 0
+    CORE_MIDI_INDEX=0
+    
+    # Verify the device exists
+    MIDI_DEVICE_COUNT=$(./m2o --list | grep -c "([0-9]*):" || echo "0")
+    if [ "$MIDI_DEVICE_COUNT" -eq 0 ]; then
+        echo "Warning: No Core MIDI devices found"
+        CORE_MIDI_INDEX=-1
+    fi
+    
     # Export for use by other scripts
     export MIDI_DEVICE_ID="$DEVICE_ID"
     export MIDI_DEVICE_NAME="${devices[$selected_index]}"
+    export CORE_MIDI_INDEX="$CORE_MIDI_INDEX"
     
     # Extract key info efficiently
     lsusb -v -d "$DEVICE_ID" 2>/dev/null | awk '
