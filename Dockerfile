@@ -3,6 +3,7 @@ FROM debian:bookworm-slim
 # Install runtime dependencies and build tools for osmid
 RUN apt-get update && apt-get install -y \
     jackd2 \
+    jack-tools \
     liblo-tools \
     socat \
     bc \

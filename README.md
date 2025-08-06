@@ -40,7 +40,7 @@ timeout 10 bash -c 'echo "test" | ./go.sh'
 
 ### Mac Components:
 - `find_midi_devices.sh` - Interactive USB MIDI device selector
-- `mappings.omm` - OSC2MIDI configuration for 8 channels, etc
+- `multitimbral.omm` - OSC2MIDI configuration for 8 channels, etc
 - `run_mac_stuff.sh` - Main Mac orchestration script
 
 ### Docker Components:
